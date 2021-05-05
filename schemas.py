@@ -1,13 +1,23 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 
 class TODOCreate(BaseModel):
     desc: str
-    completed: bool
+    completed: Optional[bool]
+
+
+class TODORead(TODOCreate):
+    id: int
+    desc: Optional[str]
+
+    class Config:
+        orm_mode = True
 
 
 class TODOUpdate(TODOCreate):
-    id: int
+    desc: Optional[str]
 
     class Config:
         orm_mode = True
