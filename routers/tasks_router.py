@@ -5,29 +5,29 @@ from sqlalchemy import update, delete
 
 from models import Task
 from routers import session
-from schemas import TODOCreate, TODOUpdate, TODORead
-from utils import get_task
+from schemas.task_schemas import TODOCreate, TODOUpdate, TODORead
+from utils import get_item_by_id
 
-ROUTER = InferringRouter()
+TASK_ROUTER = InferringRouter()
 
 
-@cbv(ROUTER)
+@cbv(TASK_ROUTER)
 class TaskView:
-    @ROUTER.post("/task")
+    @TASK_ROUTER.post("/task_list/{list_id}/task")
     async def create_item(self, task: TODOCreate) -> TODORead:
-        task_orm = Task(desc=task.desc)
+        task_orm = Task(desc=task.desc, list_id=task.list_id)
         session.add(task_orm)
         await session.commit()
         return TODORead.from_orm(task_orm)
 
-    @ROUTER.get("/task/{task_id}")
+    @TASK_ROUTER.get("/task_list/{list_id}/task/{task_id}")
     async def read_item(self, task_id: int) -> TODORead:
-        task_orm = await get_task(session, task_id)
+        task_orm = await get_item_by_id(session, Task, task_id)
         return TODORead.from_orm(task_orm)
 
-    @ROUTER.put("/task/{task_id}")
+    @TASK_ROUTER.put("/task_list/{list_id}/task/{task_id}")
     async def update_item(self, task_id: int, task: TODOUpdate) -> TODORead:
-        task_orm = await get_task(session, task_id)
+        task_orm = await get_item_by_id(session, Task, task_id)
         q = update(Task).where(Task.id == task_id)
         if task.desc:
             q = q.values(desc=task.desc)
@@ -37,7 +37,7 @@ class TaskView:
         await session.execute(q)
         return TODORead.from_orm(task_orm)
 
-    @ROUTER.delete("/task/{task_id}")
+    @TASK_ROUTER.delete("/task_list/{list_id}/task/{task_id}")
     async def delete_item(self, task_id: int) -> APIMessage:
         q = delete(Task).where(Task.id == task_id)
         await session.execute(q)
