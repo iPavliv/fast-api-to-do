@@ -11,7 +11,7 @@ class Task(Base):
     id = Column(Integer, primary_key=True)
     desc = Column(String)
     completed = Column(Boolean, default=False)
-    list_id = Column(Integer, ForeignKey('TaskList.id', ondelete='CASCADE'))
+    list_id = Column(Integer, ForeignKey("TaskList.id", ondelete="CASCADE"))
 
 
 class TaskList(Base):
