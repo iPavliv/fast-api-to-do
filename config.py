@@ -12,7 +12,8 @@ class DevSettings(BaseSettings):
 
 class TestSettings(BaseSettings):
     database_url: str = f"postgresql+asyncpg://todos:todos@{DB_URL}/{TEST_DB_NAME}"
-    isolation_level: str = "READ_COMMITTED"
+    isolation_level: str = "AUTOCOMMIT"
+    # isolation_level: str = "READ_COMMITTED"
 
 
 settings = {

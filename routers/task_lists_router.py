@@ -27,7 +27,8 @@ class TaskListView:
         return TListRead.from_orm(task_list_orm)
 
     @LIST_ROUTER.put("/task_list/{list_id}")
-    async def update_item(self, list_id: int, task_list: TListUpdate, session: AsyncSession = Depends(get_session)) -> TListRead:
+    async def update_item(
+            self, list_id: int, task_list: TListUpdate, session: AsyncSession = Depends(get_session)) -> TListRead:
         task_list_orm = await get_item_by_id(session, TaskList, list_id)
         q = update(TaskList).where(TaskList.id == list_id)
         q = q.values(desc=task_list.desc)
